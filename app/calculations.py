@@ -17,7 +17,7 @@ def calculate_trip_price(
     litres_used = distance * customer.car.fuel_consumption / 100
 
     trip_price = litres_used * fuel_price
-    return round(trip_price * 2, 2)
+    return trip_price * 2
 
 
 def calculate_total_price(customer: Customer, shop: Shop) -> float:
@@ -32,13 +32,13 @@ def calculate_total_price(customer: Customer, shop: Shop) -> float:
     for product_cart, quantity in customer.products_cart.items():
         if product_cart in shop.product_prices:
             price = quantity * shop.product_prices[product_cart]
-            if customer.have_enough_money_to_perform(price):
+            if customer.have_enough_money_to_perform_purchase(price):
                 total_price += price
 
     return total_price
 
 
-def purchases_info(customer: Customer, shop: Shop, total_price: float) -> None:
+def purchases_info(customer: Customer, shop: Shop) -> None:
     print(f"{customer.name} rides to {shop.name}\n")
     current_time = datetime(
         2021, 1, 4, 12, 33, 41
@@ -47,13 +47,17 @@ def purchases_info(customer: Customer, shop: Shop, total_price: float) -> None:
     print(f"Thanks, {customer.name}, for your purchase!")
     print("You have bought:")
 
+    purchases_price = 0
     for product_cart, quantity in customer.products_cart.items():
         if product_cart in shop.product_prices:
             price = shop.product_prices[product_cart] * quantity
-            print(f"{quantity} {product_cart}s for {price} dollars")
+            purchases_price += price
+            print(
+                f"{quantity} {product_cart}s for "
+                f"{int(price) if price.is_integer() else round(price, 2)}"
+                f" dollars"
+            )
 
-    print(f"Total cost is {round(total_price, 2)} dollars")
+    print(f"Total cost is {round(purchases_price, 2)} dollars")
     print("See you again!\n")
     print(f"{customer.name} rides home")
-    customer.money -= total_price
-    print(f"{customer.name} now has {round(customer.money, 2)} dollars\n")
