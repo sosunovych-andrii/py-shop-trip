@@ -4,7 +4,7 @@ from app.shop import Shop
 from app.calculations import calculate_trip_price, purchase_info
 
 
-def shop_trip():
+def shop_trip() -> None:
     with open("app/config.json", "r") as f:
         data = json.load(f)
 
@@ -16,8 +16,9 @@ def shop_trip():
             customer["product_cart"],
             customer["location"],
             customer["money"],
-            customer["car"]
-        ) for customer in data["customers"]
+            customer["car"],
+        )
+        for customer in data["customers"]
     ]
 
     shops = [
@@ -28,7 +29,6 @@ def shop_trip():
         ) for shop in data["shops"]
     ]
 
-
     for customer in customers:
         print(f"{customer.name} has {customer.money} dollars")
 
@@ -36,18 +36,21 @@ def shop_trip():
         for shop in shops:
             trip_price = calculate_trip_price(customer, shop, fuel_price)
             print(f"{customer.name}'s trip"
-                f" to the {shop.name} costs"
-                f" {trip_price}"
-            )
+                  f" to the {shop.name} costs {trip_price}")
             trip_prices[trip_price] = shop
 
         cheapest_trip = min(trip_prices.keys())
         closest_shop = trip_prices[cheapest_trip]
 
         if customer.have_enough_money_to_perform_operation(cheapest_trip):
+            customer.money -= cheapest_trip
             print(f"{customer.name} rides to the {shop.name}\n")
             purchase_info(customer, closest_shop)
         else:
-            print(f"{customer.name} doesn't have enough money to make a purchase in any shop")
+            print(
+                f"{customer.name} doesn't have enough money"
+                f" to make a purchase in any shop"
+            )
+
 
 shop_trip()
