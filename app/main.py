@@ -1,11 +1,11 @@
 import json
-from datetime import datetime
 from app.customer import Customer
 from app.shop import Shop
-from app.calculations import calculate_trip_price
+from app.calculations import calculate_trip_price, purchase_info
+
 
 def shop_trip():
-    with open("config.json", "r") as f:
+    with open("app/config.json", "r") as f:
         data = json.load(f)
 
     fuel_price = data["FUEL_PRICE"]
@@ -30,7 +30,7 @@ def shop_trip():
 
 
     for customer in customers:
-        print(f"{customer.name} has {customer.money} money")
+        print(f"{customer.name} has {customer.money} dollars")
 
         trip_prices = {}
         for shop in shops:
@@ -39,16 +39,15 @@ def shop_trip():
                 f" to the {shop.name} costs"
                 f" {trip_price}"
             )
-            trip_prices[shop.name] = trip_price
+            trip_prices[trip_price] = shop
 
-        closest_shop = min(trip_prices, key=trip_prices.get)
-        cheapest_trip = min(trip_prices.values())
+        cheapest_trip = min(trip_prices.keys())
+        closest_shop = trip_prices[cheapest_trip]
 
-        if customer.have_enough_money_to_perform(cheapest_trip):
-            print(f"{customer.name} rides to the {closest_shop}")
-            current_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-            print(f"Date: {current_time}")
-            print("You have bought:")
-            print(f"Thanks {customer.name}, for your purchase!")
+        if customer.have_enough_money_to_perform_operation(cheapest_trip):
+            print(f"{customer.name} rides to the {shop.name}\n")
+            purchase_info(customer, closest_shop)
         else:
             print(f"{customer.name} doesn't have enough money to make a purchase in any shop")
+
+shop_trip()
