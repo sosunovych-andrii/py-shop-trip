@@ -52,9 +52,14 @@ def purchases_info(customer: Customer, shop: Shop) -> None:
         if product_cart in shop.product_prices:
             price = shop.product_prices[product_cart] * quantity
             purchases_price += price
+            price = (
+                int(price)
+                if float(price).is_integer()
+                else round(price, 2)
+            )
             print(
                 f"{quantity} {product_cart}s for "
-                f"{int(price) if float(price).is_integer() else round(price, 2)}"
+                f"{price}"
                 f" dollars"
             )
 
