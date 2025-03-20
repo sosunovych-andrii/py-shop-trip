@@ -54,7 +54,7 @@ def purchases_info(customer: Customer, shop: Shop) -> None:
             purchases_price += price
             print(
                 f"{quantity} {product_cart}s for "
-                f"{int(price) if price.is_integer() else round(price, 2)}"
+                f"{int(price) if float(price).is_integer() else round(price, 2)}"
                 f" dollars"
             )
 
