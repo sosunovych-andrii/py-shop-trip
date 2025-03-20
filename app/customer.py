@@ -16,10 +16,7 @@ class Customer:
         self.money = money
         self.car = Car(car["brand"], car["fuel_consumption"])
 
-    def have_enough_money_to_perform_operation(
-            self,
-            price: float | int
-    ) -> bool:
+    def have_enough_money_to_perform(self, price: float | int) -> bool:
         if self.money > price:
             return True
         return False
